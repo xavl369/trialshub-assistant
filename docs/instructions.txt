@@ -1,0 +1,18 @@
+Conditions:
+- Use Vercel to deploy (and look at their libraries)
+- Use OpenAI API to answer questions
+- Use langchain.js to connect OPEN AI to your frontend: https://js.langchain.com/docs/get_started/introduction
+
+Screens Explained:
+Screen 1
+Home page with multiple buttons that act as questions. Once selected take the question and pass it to the next screen.
+
+Screen 2
+The chatbot response is to ask what CONDITION to search for. The conditions list: [‘cancer’, heart disease’, ‘asthma’]
+If the condition is not in this list, tell the user there is no condition. If it’s a general question (not related to the condition) answer the users question but ask them for a condition.
+
+Screen 3
+Once a condition is typed in, confirm the condition. Yes or no button.
+
+Screen 4
+If no, repeat. If yes respond with “Searching for trials now…”.

@@ -1,0 +1,70 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  background-color: #fafafa;
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+.mt-16{
+  margin-top: 90px;
+}
+
+
+.icon {
+  width: 25px;
+  height: 25px;
+}
+
+.title-container {
+  background-color: white;
+  height: 120px;
+  width: 100%;
+  box-shadow: 
+  -3px 0px 5px rgba(0, 0, 0, 0.03),
+  3px 0px 5px rgba(0, 0, 0, 0.03), 
+  0px 3px 5px rgba(0, 0, 0, 0.03); 
+  display: flex;
+  align-items: center
+}
+
+.title {
+  margin-left: 81px;
+}
+
+.message-input{
+  width: 80%;
+  outline: none;
+}
+
+.ask-btn {
+  background-color: #70a5e7;
+}
+
+.ask-btn:disabled {
+  background-color: #87b5e9;
+  cursor: not-allowed; 
+}
+
+.input-container {
+  border-top: 18px solid #70a5e7;
+  width: 69vw;
+  height: 150px;
+  box-shadow: 
+    -3px 0px 5px rgba(0, 0, 0, 0.03),
+    3px 0px 5px rgba(0, 0, 0, 0.03), 
+    0px 3px 5px rgba(0, 0, 0, 0.03); 
+    background-color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+
+

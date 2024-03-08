@@ -1,0 +1,76 @@
+.message-box{
+    width: 80%;
+    margin-bottom: 18px;
+    background-color: white;
+    box-shadow: 
+    -3px 0px 5px rgba(0, 0, 0, 0.03),
+    3px 0px 5px rgba(0, 0, 0, 0.03), 
+    0px 3px 5px rgba(0, 0, 0, 0.03); 
+    padding-bottom: 18px;
+  }
+  
+  .message-container{
+    height: 63vh;
+    width: 100%;
+    margin-top: 18px; 
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow-y: auto;
+    scroll-behavior: auto;
+  }
+  
+  .chip{
+    padding-left: 18px;
+    padding-right: 18px
+  }
+  
+  .color-user{
+    background-color: #6f6f70;
+  }
+  
+  .color-ai{
+    background-color: #4355c4;
+  }
+
+  .message {
+    word-wrap: break-word !important;
+    padding-right: 9px;
+    padding-left: 9px;
+    position: relative;
+  }
+
+ 
+  .main{
+    display: flex;
+    display: column;
+  }
+
+  .input-container {
+    border-top: 18px solid #70a5e7;
+    width: 69vw;
+    height: 120px;
+    box-shadow: 
+      -3px 0px 5px rgba(0, 0, 0, 0.03),
+      3px 0px 5px rgba(0, 0, 0, 0.03), 
+      0px 3px 5px rgba(0, 0, 0, 0.03); 
+      background-color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 18px;
+  }
+  
+  .btn-yes {
+    background-color: #86b4e9;
+  }
+
+  .btn-no{
+    background-color: #f19f9c;
+  }
+  
+  .confirmButtons {
+    width: 85%;
+  }
+
+ 
