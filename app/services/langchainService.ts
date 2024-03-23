@@ -15,7 +15,7 @@ export const getUpstashRedisChatMessageHistory = (sessionId: string, sessionTTL:
 
     if(!url || !token){
         console.log('Url or Token not provided for history');
-        return null;
+        return undefined;
     }
 
     const config = {
@@ -46,7 +46,7 @@ export const getConversationSummaryBufferMemory = (inputKey: string, memoryKey: 
     return memory;
 }
 
-export const getConversationChain = (llm: ChatOpenAI,  prompt:ChatPromptTemplate, memory: ConversationSummaryBufferMemory) => {
+export const getConversationChain = (llm: ChatOpenAI,  prompt:ChatPromptTemplate, memory: any) => {
     const chain = new ConversationChain({
         memory: memory,
         prompt:  prompt,

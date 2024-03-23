@@ -11,7 +11,7 @@ import { TRIALSHUB_TEMPLATE } from '../../prompts/templates';
 //     MessagesPlaceholder,
 //   } from "@langchain/core/prompts";
 //import { ConversationChain } from 'langchain/chains';
-//import { BufferMemory } from 'langchain/memory';
+import { BufferMemory } from 'langchain/memory';
 import { HumanMessage } from "@langchain/core/messages";
 import { NextResponse } from "next/server";
 import { ChatPromptTemplate } from '@langchain/core/prompts';
@@ -30,7 +30,6 @@ export const runtime = "edge";
 export const POST = async (req: Request) => {
   
   const { messages, sessionId } = await req.json();
-  console.log(sessionId);
     // const { stream, handlers } = LangChainStream();
     
     // const model = new ChatOpenAI({
@@ -69,15 +68,20 @@ export const POST = async (req: Request) => {
     const chatOpenAI = getChatOpenAI();
     const prompt = ChatPromptTemplate.fromTemplate(TRIALSHUB_TEMPLATE);
     const history = getUpstashRedisChatMessageHistory(sessionId);
-    console.log(history);
-    const memory = getConversationSummaryBufferMemory('input', 'history', history);
+    //const memory = getConversationSummaryBufferMemory('input', 'history', history);
+    const memory = new BufferMemory({ 
+      returnMessages: false, 
+      memoryKey: "history", //history match with MessagesPlaceholde
+      chatHistory: history
+   }); 
+  
     const chain = getConversationChain(chatOpenAI.model, prompt, memory);
    
     chain.invoke({
       input: messages[messages.length - 1].content,
     });
 
-    console.log(await memory.loadMemoryVariables());
+    console.log(await memory.loadMemoryVariables({}));
 
     const streamTextResponse = new StreamingTextResponse(chatOpenAI.stream);
     return streamTextResponse;
