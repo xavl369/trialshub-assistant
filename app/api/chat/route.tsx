@@ -26,7 +26,7 @@ import { UpstashRedisChatMessageHistory } from '@langchain/community/stores/mess
 //import { readFileSync } from "node:fs";
 //import { join } from "node:path";
 
-export const runtime = "edge";
+//export const runtime = "edge";
 
 
 export const POST = async (req: Request) => {
@@ -111,7 +111,6 @@ export async function GET(req: Request) {
   const history = getUpstashRedisChatMessageHistory(sessionId);
   if (history) {
       const historyMessages = await history.getMessages();
-      console.log(historyMessages);
       const messages: Message[] = historyMessages.map(msg => {
           const role = msg instanceof HumanMessage ? 'user' : 'assistant';
           return {
