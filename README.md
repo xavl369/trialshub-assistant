@@ -42,9 +42,9 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 Sample images related to the project:
 
-![image](https://github.com/xavl369/trialshub-assistant/assets/31866236/9a373134-04f4-4a20-b436-06533b48e21c)
+![image](https://github.com/xavl369/trialshub-assistant/assets/31866236/95717dd0-8743-4f60-9c29-88fe4ab3fa34)
 
-![image](https://github.com/xavl369/trialshub-assistant/assets/31866236/73175931-2ef7-434d-903a-7bc5c1c260fe)
+![image](https://github.com/xavl369/trialshub-assistant/assets/31866236/bf727d67-ec38-4da2-b9b1-53ce9ff37c69)
 
 
 ## Learn More
