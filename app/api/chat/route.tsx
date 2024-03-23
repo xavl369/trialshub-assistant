@@ -91,6 +91,7 @@ export async function GET(req: Request) {
   const history = getUpstashRedisChatMessageHistory(sessionId);
   if (history) {
       const historyMessages = await history.getMessages();
+      console.log(historyMessages);
       const messages: Message[] = historyMessages.map(msg => {
           const role = msg instanceof HumanMessage ? 'user' : 'assistant';
           return {
