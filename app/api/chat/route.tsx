@@ -69,6 +69,7 @@ export const POST = async (req: Request) => {
     const chatOpenAI = getChatOpenAI();
     const prompt = ChatPromptTemplate.fromTemplate(TRIALSHUB_TEMPLATE);
     const history = getUpstashRedisChatMessageHistory(sessionId);
+    console.log(history);
     const memory = getConversationSummaryBufferMemory('input', 'history', history);
     const chain = getConversationChain(chatOpenAI.model, prompt, memory);
    
