@@ -26,7 +26,7 @@ import { UpstashRedisChatMessageHistory } from '@langchain/community/stores/mess
 //import { readFileSync } from "node:fs";
 //import { join } from "node:path";
 
-//export const runtime = "edge";
+export const runtime = "edge";
 
 
 export const POST = async (req: Request) => {
