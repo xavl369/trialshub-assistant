@@ -1,18 +1,25 @@
-import { LangChainStream, StreamingTextResponse, Message } from 'ai'
-import { CallbackManager } from '@langchain/core/callbacks/manager';
-import { ChatOpenAI } from '@langchain/openai';
+import { /*LangChainStream, */StreamingTextResponse, Message } from 'ai'
+//import { CallbackManager } from '@langchain/core/callbacks/manager';
+//import { ChatOpenAI } from '@langchain/openai';
 //import { AIMessage, HumanMessage } from '@langchain/core/messages';
 //import { PromptTemplate } from "@langchain/core/prompts";
 import { TRIALSHUB_TEMPLATE } from '../../prompts/templates';
-import {
-    ChatPromptTemplate,
-    HumanMessagePromptTemplate,
-    SystemMessagePromptTemplate,
-    MessagesPlaceholder,
-  } from "@langchain/core/prompts";
-import { ConversationChain } from 'langchain/chains';
-import { BufferMemory } from 'langchain/memory';
-  
+// import {
+//     ChatPromptTemplate,
+//     HumanMessagePromptTemplate,
+//     SystemMessagePromptTemplate,
+//     MessagesPlaceholder,
+//   } from "@langchain/core/prompts";
+//import { ConversationChain } from 'langchain/chains';
+//import { BufferMemory } from 'langchain/memory';
+import { HumanMessage } from "@langchain/core/messages";
+import { NextResponse } from "next/server";
+import { ChatPromptTemplate } from '@langchain/core/prompts';
+import { getChatOpenAI,
+         getConversationChain ,
+         getUpstashRedisChatMessageHistory, 
+         getConversationSummaryBufferMemory } from '@/app/services/langchainService';
+
 //for retieval using RetrievalQAChain using a retriever vectorStore from faiss file index
 //import { readFileSync } from "node:fs";
 //import { join } from "node:path";
@@ -21,22 +28,21 @@ export const runtime = "edge";
 
 
 export const POST = async (req: Request) => {
-
-    const { messages } = await req.json();
-    const { stream, handlers } = LangChainStream();
+  
+  const { messages, sessionId } = await req.json();
+  console.log(sessionId);
+    // const { stream, handlers } = LangChainStream();
     
-    const model = new ChatOpenAI({
-        streaming: true,
-        callbackManager: CallbackManager.fromHandlers(handlers)
-    });
+    // const model = new ChatOpenAI({
+    //     streaming: true,
+    //     callbackManager: CallbackManager.fromHandlers(handlers)
+    // });
 
-    const chatPrompt = ChatPromptTemplate.fromMessages([
-        SystemMessagePromptTemplate.fromTemplate(
-          TRIALSHUB_TEMPLATE
-        ),
-        new MessagesPlaceholder("history"),
-        HumanMessagePromptTemplate.fromTemplate("{input}"),
-      ]);
+    // const chatPrompt = ChatPromptTemplate.fromMessages([
+    //     SystemMessagePromptTemplate.fromTemplate(TRIALSHUB_TEMPLATE),
+    //     new MessagesPlaceholder("history"),
+    //     HumanMessagePromptTemplate.fromTemplate("{input}"),
+    //   ]);
 
     // model.invoke(
     //     (messages as Message[]).map((m) =>
@@ -47,17 +53,64 @@ export const POST = async (req: Request) => {
     // )
     // .catch(console.error);
 
-    const chain = new ConversationChain({
-        memory: new BufferMemory({ returnMessages: true, memoryKey: "history" }),
-        prompt: chatPrompt,
-        llm: model,
-      });
+    // const memory = new BufferMemory({ returnMessages: true, memoryKey: "history" });
+    // const chain = new ConversationChain({
+    //     memory: memory,
+    //     prompt: chatPrompt,
+    //     llm: model,
+    //   });
     
-      chain.invoke({
-        input: messages[messages.length - 1].content
-    })
-    .catch(console.error);
+    //   chain.invoke({
+    //     input: messages[messages.length - 1].content
+    // })
+    // .catch(console.error);
 
-    const streamTextResponse = new StreamingTextResponse(stream);
+    
+    const chatOpenAI = getChatOpenAI();
+    const prompt = ChatPromptTemplate.fromTemplate(TRIALSHUB_TEMPLATE);
+    const history = getUpstashRedisChatMessageHistory(sessionId);
+    const memory = getConversationSummaryBufferMemory('input', 'history', history);
+    const chain = getConversationChain(chatOpenAI.model, prompt, memory);
+   
+    chain.invoke({
+      input: messages[messages.length - 1].content,
+    });
+
+    console.log(await memory.loadMemoryVariables());
+
+    const streamTextResponse = new StreamingTextResponse(chatOpenAI.stream);
     return streamTextResponse;
 }
+
+
+export async function GET(req: Request) {
+
+  const queryParams = getQueryParameters(req);
+  const sessionId = queryParams.get('sessionId') as string;
+
+  const history = getUpstashRedisChatMessageHistory(sessionId);
+  if (history) {
+      const historyMessages = await history.getMessages();
+      const messages: Message[] = historyMessages.map(msg => {
+          const role = msg instanceof HumanMessage ? 'user' : 'assistant';
+          return {
+              id: '',
+              content: msg.content as string,
+              role: role
+          };
+      });
+
+      return NextResponse.json(messages)
+  }
+  else {
+      return NextResponse.json([])
+  }
+}
+
+
+const getQueryParameters = (req: Request) => {
+  const url = new URL(req.url);
+  const searchParams = new URLSearchParams(new URL(url).searchParams);
+  return searchParams;
+}
+

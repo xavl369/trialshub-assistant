@@ -8,15 +8,25 @@ import { Message, useChat } from 'ai/react';
 import Header from '../components/ui/Header';
 import Footer from '../components/ui/Footer';
 import MessageInput from '../components/ui/MessageInput';
+import { useSessionId } from '../hooks/useSessionId';
+import useFetch from '../hooks/useFetch';
 
 const Chat : React.FC = () => {
-
+  const [ sessionId ] = useSessionId();
   const { inputMessage, setInputMessage } = useMessage();
   const [ isConfirmationVisible, setIsConfirmationVisible ] = useState(false);
-  const { messages, append } = useChat();
+  const { messages, setMessages, append } = useChat({ body: {
+    sessionId: sessionId
+}});
   const messageContainerRef = useRef<HTMLDivElement>(null);
+
+  const { loading } = useFetch(`api/chat?sessionId=${sessionId}`, 
+                               setMessages, 
+                               sessionId as string, 
+                               true
+                      );
   
-  useEffect(() => sendMessage(inputMessage.value), [])
+  //useEffect(() => sendMessage(inputMessage.value), [])
 
   useEffect(() => {
     if (messageContainerRef.current) {
