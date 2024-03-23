@@ -19,14 +19,14 @@ import { getChatOpenAI,
          getConversationChain ,
          getUpstashRedisChatMessageHistory, 
          getConversationSummaryBufferMemory } from '@/app/services/langchainService';
-import { Redis } from '@upstash/redis';
-import { UpstashRedisChatMessageHistory } from '@langchain/community/stores/message/upstash_redis';
+//import { Redis } from '@upstash/redis';
+//import { UpstashRedisChatMessageHistory } from '@langchain/community/stores/message/upstash_redis';
 
 //for retieval using RetrievalQAChain using a retriever vectorStore from faiss file index
 //import { readFileSync } from "node:fs";
 //import { join } from "node:path";
 
-export const runtime = "edge";
+//export const runtime = "edge";
 
 
 export const POST = async (req: Request) => {
@@ -69,26 +69,27 @@ export const POST = async (req: Request) => {
     
     const chatOpenAI = getChatOpenAI();
     const prompt = ChatPromptTemplate.fromTemplate(TRIALSHUB_TEMPLATE);
-    //const history = getUpstashRedisChatMessageHistory(sessionId);
-    //const memory = getConversationSummaryBufferMemory('input', 'history', history);
+    const history = getUpstashRedisChatMessageHistory(sessionId);
+    const memory = getConversationSummaryBufferMemory('input', 'history', history);
   //   const memory = new BufferMemory({ 
   //     returnMessages: false, 
   //     memoryKey: "history", //history match with MessagesPlaceholde
   //     chatHistory: history
   //  }); 
-  const url = process.env.UPSTASH_REDIS_URL || '';
-  const token = process.env.UPSTASH_REST_TOKEN || '';
-  const client = new Redis({
-    url:url,
-    token: token,
-  });
+  // const url = process.env.UPSTASH_REDIS_URL || '';
+  // const token = process.env.UPSTASH_REST_TOKEN || '';
+  // const client = new Redis({
+  //   url:url,
+  //   token: token,
+  // });
   
-  const memory = new BufferMemory({
-    chatHistory: new UpstashRedisChatMessageHistory({
-      sessionId: sessionId,
-      client, // You can reuse your existing Redis client
-    }),
-  });
+  // const memory = new BufferMemory({
+  //   chatHistory: new UpstashRedisChatMessageHistory({
+  //     sessionId: new Date().toISOString(),
+
+  //     client, // You can reuse your existing Redis client
+  //   }),
+  // });
   
     const chain = getConversationChain(chatOpenAI.model, prompt, memory);
    
@@ -111,6 +112,7 @@ export async function GET(req: Request) {
   const history = getUpstashRedisChatMessageHistory(sessionId);
   if (history) {
       const historyMessages = await history.getMessages();
+      console.log(historyMessages);
       const messages: Message[] = historyMessages.map(msg => {
           const role = msg instanceof HumanMessage ? 'user' : 'assistant';
           return {
