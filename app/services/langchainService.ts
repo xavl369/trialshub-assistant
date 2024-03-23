@@ -11,6 +11,7 @@ export const getUpstashRedisChatMessageHistory = (sessionId: string, sessionTTL:
 
     const url = process.env.UPSTASH_REDIS_URL || '';
     const token = process.env.UPSTASH_REST_TOKEN || ''
+    console.log(url);
 
     if(!url || !token){
         console.log('Url or Token not provided for history');
